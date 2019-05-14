@@ -19,7 +19,7 @@ func Inspect(claims Claimer, signer Signer) ([]byte, []byte) {
 	return h, c
 }
 
-// Serialize generates a jwt.
+// Serialize generates a JWT given a set of Claims
 func Serialize(claims Claimer, signer Signer) string {
 	h, c := Inspect(claims, signer)
 
@@ -30,7 +30,7 @@ func Serialize(claims Claimer, signer Signer) string {
 	return cat(jwt, signer.Sign(jwt))
 }
 
-// Unserialize decodes a thing
+// Unserialize decodes a JWT's claims into `dest` and verifies the JWT via the given Signer
 func Unserialize(dest interface{}, jwt string, signer Signer) error {
 	var err error
 	tokens, err := tok(jwt)

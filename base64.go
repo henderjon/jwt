@@ -7,13 +7,13 @@ import (
 
 // removing/adding the '=' is to make the JWT URL friendly?
 
-// Base64Encode takes in a string and returns a base 64 encoded string
+// Base64Encode takes a []byte and returns a base 64 encoded string
 func Base64Encode(src []byte) string {
 	return strings.TrimRight(base64.URLEncoding.EncodeToString(src), "=")
 }
 
 // Base64Decode takes in a base 64 encoded string and returns the
-// actual string or an error of it fails to decode the string
+// decoded []byte
 func Base64Decode(src string) ([]byte, error) {
 	if l := len(src) % 4; l > 0 {
 		src += strings.Repeat("=", 4-l)
