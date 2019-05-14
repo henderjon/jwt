@@ -12,9 +12,6 @@ const (
 	tokenSignature = 2
 )
 
-// ErrInvalidToken are errors for users
-var ErrInvalidToken = errors.New("Token: Invalid token")
-
 // Inspect allows the inspection of the values going into the header and payload of the JWT
 func Inspect(claims Claimer, signer Signer) ([]byte, []byte) {
 	h, _ := json.Marshal(NewHeader(signer.Name()))

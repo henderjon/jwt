@@ -8,16 +8,13 @@ import (
 	_ "crypto/sha256"
 )
 
-// ErrSignatureNotVerified means the signatures do not match
-var ErrSignatureNotVerified = errors.New("signature: invalid")
-
 // HMACSHA256 will sign a JWT using crypto.SHA256
 type HMACSHA256 struct {
 	secret []byte
 }
 
 // NewHMACSHA256 is a signer
-func NewHMACSHA256(secret []byte) Signer {
+func NewHMACSHA256(secret []byte) *HMACSHA256 {
 	return &HMACSHA256{secret}
 }
 
@@ -39,5 +36,5 @@ func (s *HMACSHA256) Verify(src, signature string) error {
 	if signature == expected {
 		return nil
 	}
-	return ErrSignatureNotVerified
+	return errors.New("signature not verified")
 }
