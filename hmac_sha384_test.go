@@ -13,7 +13,7 @@ type tmpHS384 struct {
 }
 
 func getPayloadHS384() *tmpHS384 {
-	payload := &tmpHS384{
+	return &tmpHS384{
 		Name:  "John Paul Jones",
 		Email: "jpj@ledzep.com",
 		Claims: Claims{
@@ -22,8 +22,6 @@ func getPayloadHS384() *tmpHS384 {
 			ID:      "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
 		},
 	}
-
-	return payload
 }
 
 func TestSerializeHS384(t *testing.T) {

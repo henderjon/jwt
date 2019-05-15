@@ -13,7 +13,7 @@ type tmpHS512 struct {
 }
 
 func getPayloadHS512() *tmpHS512 {
-	payload := &tmpHS512{
+	return &tmpHS512{
 		Name:  "John Paul Jones",
 		Email: "jpj@ledzep.com",
 		Claims: Claims{
@@ -22,8 +22,6 @@ func getPayloadHS512() *tmpHS512 {
 			ID:      "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
 		},
 	}
-
-	return payload
 }
 
 func TestSerializeHS512(t *testing.T) {

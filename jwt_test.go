@@ -14,7 +14,7 @@ type tmp struct {
 }
 
 func getPayload() *tmp {
-	payload := &tmp{
+	return &tmp{
 		Name:  "John Paul Jones",
 		Email: "jpj@ledzep.com",
 		Claims: Claims{
@@ -23,8 +23,6 @@ func getPayload() *tmp {
 			ID:      "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
 		},
 	}
-
-	return payload
 }
 
 func TestMarshal(t *testing.T) {

@@ -13,15 +13,15 @@ const (
 )
 
 // Inspect allows the inspection of the values going into the header and payload of the JWT
-func Inspect(claims Claimer, signer Signer) ([]byte, []byte) {
-	h, _ := json.Marshal(NewHeader(signer.Name()))
+func Inspect(header Header, claims Claimer) ([]byte, []byte) {
+	h, _ := json.Marshal(header)
 	c, _ := json.Marshal(claims)
 	return h, c
 }
 
 // Serialize generates a JWT given a set of Claims
 func Serialize(claims Claimer, signer Signer) string {
-	h, c := Inspect(claims, signer)
+	h, c := Inspect(NewHeader(signer.Name()), claims)
 
 	header := Base64Encode(h)
 	payload := Base64Encode(c)

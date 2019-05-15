@@ -13,7 +13,7 @@ type tmpHS256 struct {
 }
 
 func getPayloadHS256() *tmpHS256 {
-	payload := &tmpHS256{
+	return &tmpHS256{
 		Name:  "John Paul Jones",
 		Email: "jpj@ledzep.com",
 		Claims: Claims{
@@ -22,8 +22,6 @@ func getPayloadHS256() *tmpHS256 {
 			ID:      "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
 		},
 	}
-
-	return payload
 }
 
 func TestSerializeHS256(t *testing.T) {
