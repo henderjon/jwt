@@ -42,7 +42,7 @@ func TestBlah(t *testing.T) {
 	}
 
 	m := &tmp{}
-	e := Unserialize(m, token, signer)
+	e := Unserialize(token, signer, m)
 	if e != nil {
 		t.Errorf("unserialize error:\n%s", e)
 	}
@@ -51,7 +51,7 @@ func TestBlah(t *testing.T) {
 		t.Error("token is not valid yet")
 	}
 
-	if m.IsExpired(time.Now().Add(6 * 24 * time.Hour).UTC().Unix()) {
+	if m.IsExpired(time.Now().UTC().Unix()) {
 		t.Error("EXPIRED!!")
 	}
 

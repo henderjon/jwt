@@ -31,7 +31,7 @@ func Serialize(claims Claimer, signer Signer) string {
 }
 
 // Unserialize decodes a JWT's claims into `dest` and verifies the JWT via the given Signer
-func Unserialize(dest interface{}, jwt string, signer Signer) error {
+func Unserialize(jwt string, signer Signer, dest interface{}) error {
 	var err error
 	tokens, err := tok(jwt)
 	if err != nil {

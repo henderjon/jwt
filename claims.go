@@ -11,7 +11,7 @@ type Claimer interface {
 	Validate() bool
 }
 
-// Claims represents the standard private claims of a JWT
+// Claims represents the standard registered claims of a JWT
 type Claims struct {
 	Issuer    string `json:"iss,omitempty"` // (Issuer) Claim
 	Subject   string `json:"sub,omitempty"` // (Subject) Claim
@@ -22,10 +22,9 @@ type Claims struct {
 	ID        string `json:"jti,omitempty"` // (JWT ID) Claim
 }
 
-// NewSimpleClaims gives you a basic set of claims based on the given subject and expiration
-func NewSimpleClaims(sub string, exp time.Duration) Claims {
+// NewClaims gives you a basic set of claims based on the given subject and expiration
+func NewClaims(exp time.Duration) Claims {
 	return Claims{
-		Subject: sub,
 		Expires: time.Now().UTC().Add(exp).Unix(),
 		ID:      uuid.New().String(),
 	}
