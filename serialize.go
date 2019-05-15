@@ -37,15 +37,23 @@ func Unserialize(jwt string, signer Signer, dest interface{}) error {
 	if err != nil {
 		return err
 	}
+
 	// decode claims
 	claims, err := Base64Decode(tokens[tokenClaims])
 	if err != nil {
-		return errors.New("Invalid claims", err)
+		return errors.New("invalid claims", err)
 	}
+
 	// parses claims from string to a struct
 	err = json.Unmarshal([]byte(claims), dest)
 	if err != nil {
-		return errors.New("Invalid claims", err)
+		return errors.New("invalid claims", err)
 	}
-	return signer.Verify(cat(tokens[tokenHeader], tokens[tokenClaims]), tokens[tokenSignature])
+
+	v := signer.Verify(cat(tokens[tokenHeader], tokens[tokenClaims]), tokens[tokenSignature])
+	if !v {
+		return errors.New("invalid signature")
+	}
+
+	return nil
 }

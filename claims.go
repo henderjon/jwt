@@ -8,7 +8,7 @@ import (
 
 // Claimer is an interface
 type Claimer interface {
-	Validate() bool
+	Valid() bool
 }
 
 // Claims represents the standard registered claims of a JWT
@@ -30,12 +30,12 @@ func NewClaims(exp time.Duration) Claims {
 	}
 }
 
-// IsActive checks to see if the claims' `nbf` field is less than the given time
-func (c *Claims) IsActive(t int64) bool {
+// NotActive checks to see if the claims' `nbf` field is less than the given time
+func (c *Claims) NotActive(t int64) bool {
 	if c.NotBefore == 0 {
-		return true
+		return false
 	}
-	return c.NotBefore <= t
+	return c.NotBefore >= t
 }
 
 // IsExpired checks to see if the claims' `exp` field is less than the given time
@@ -46,8 +46,8 @@ func (c *Claims) IsExpired(t int64) bool {
 	return c.Expires <= t
 }
 
-// Validate the current claim against time.Now()
-func (c *Claims) Validate() bool {
+// Valid the current claim against time.Now()
+func (c *Claims) Valid() bool {
 	t := time.Now().UTC().Unix()
-	return c.IsActive(t) && !c.IsExpired(t)
+	return !c.NotActive(t) && !c.IsExpired(t)
 }

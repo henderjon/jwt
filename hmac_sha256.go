@@ -3,7 +3,6 @@ package jwt
 import (
 	"crypto"
 	"crypto/hmac"
-	"errors"
 	// init this hash
 	_ "crypto/sha256"
 )
@@ -31,10 +30,10 @@ func (s *HMACSHA256) Name() string {
 }
 
 // Verify a given JWT via the Signer
-func (s *HMACSHA256) Verify(src, signature string) error {
+func (s *HMACSHA256) Verify(src, signature string) bool {
 	expected := s.Sign(src)
 	if signature == expected {
-		return nil
+		return true
 	}
-	return errors.New("signature not verified")
+	return false
 }
