@@ -1,7 +1,9 @@
 package jwt
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"strings"
 
 	"github.com/henderjon/errors"
 )
@@ -11,6 +13,26 @@ const (
 	tokenClaims    = 1
 	tokenSignature = 2
 )
+
+// removing/adding the '=' is to make the JWT URL friendly?
+
+// Base64Encode takes a []byte and returns a base 64 encoded string
+func Base64Encode(src []byte) string {
+	return strings.TrimRight(base64.URLEncoding.EncodeToString(src), "=")
+}
+
+// Base64Decode takes in a base 64 encoded string and returns the
+// decoded []byte
+func Base64Decode(src string) ([]byte, error) {
+	if l := len(src) % 4; l > 0 {
+		src += strings.Repeat("=", 4-l)
+	}
+	decoded, err := base64.URLEncoding.DecodeString(src)
+	if err != nil {
+		return nil, err
+	}
+	return decoded, nil
+}
 
 // Inspect allows the inspection of the values going into the header and payload of the JWT
 func Inspect(header Header, claims Claimer) ([]byte, []byte) {
@@ -56,4 +78,16 @@ func Unserialize(jwt string, signer Signer, dest interface{}) error {
 	}
 
 	return nil
+}
+
+func tok(jwt string) ([]string, error) {
+	token := strings.Split(jwt, ".")
+	if len(token) != 3 {
+		return []string{}, errors.New("invalid token format")
+	}
+	return token, nil
+}
+
+func cat(parts ...string) string {
+	return strings.Join(parts, ".")
 }
