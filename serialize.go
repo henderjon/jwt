@@ -60,8 +60,46 @@ func Unserialize(jwt string, signer Signer, dest interface{}) error {
 		return err
 	}
 
+	err = verifyHeader(tokens[tokenHeader], signer)
+	if err != nil {
+		return err
+	}
+
+	v := signer.Verify(cat(tokens[tokenHeader], tokens[tokenClaims]), tokens[tokenSignature])
+	if !v {
+		return errors.New("invalid signature")
+	}
+
+	err = verifyClaims(tokens[tokenClaims], signer, dest)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func verifyHeader(header64 string, signer Signer) error {
 	// decode claims
-	claims, err := Base64Decode(tokens[tokenClaims])
+	header, err := Base64Decode(header64)
+	if err != nil {
+		return errors.New("invalid header", err)
+	}
+
+	h := &Header{}
+	// parses claims from string to a struct
+	err = json.Unmarshal([]byte(header), h)
+	if err != nil {
+		return errors.New("invalid header", err)
+	}
+
+	if h.Algorithm != signer.Name() {
+		return errors.Errorf("invalid algorithm: %s", h.Algorithm)
+	}
+	return nil
+}
+
+func verifyClaims(claims64 string, signer Signer, dest interface{}) error {
+	// decode claims
+	claims, err := Base64Decode(claims64)
 	if err != nil {
 		return errors.New("invalid claims", err)
 	}
@@ -71,12 +109,6 @@ func Unserialize(jwt string, signer Signer, dest interface{}) error {
 	if err != nil {
 		return errors.New("invalid claims", err)
 	}
-
-	v := signer.Verify(cat(tokens[tokenHeader], tokens[tokenClaims]), tokens[tokenSignature])
-	if !v {
-		return errors.New("invalid signature")
-	}
-
 	return nil
 }
 
