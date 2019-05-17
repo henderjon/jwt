@@ -9,14 +9,14 @@ import (
 type tmpHS384 struct {
 	Name  string `json:"nam,omitempty"`
 	Email string `json:"eml,omitempty"`
-	Claims
+	RegisteredClaims
 }
 
 func getPayloadHS384() *tmpHS384 {
 	return &tmpHS384{
 		Name:  "John Paul Jones",
 		Email: "jpj@ledzep.com",
-		Claims: Claims{
+		RegisteredClaims: RegisteredClaims{
 			Subject: "a new jam",
 			Expires: 1653073538,
 			ID:      "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
