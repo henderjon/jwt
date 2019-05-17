@@ -36,8 +36,8 @@ type RegisteredClaims struct {
 	ID        string `json:"jti,omitempty"` // (JWT ID) Claim
 }
 
-// NewClaims gives you a basic set of claims based on the given subject and expiration
-func NewClaims(exp time.Duration) RegisteredClaims {
+// NewRegisteredClaims gives you a basic set of claims based on the given subject and expiration
+func NewRegisteredClaims(exp time.Duration) RegisteredClaims {
 	return RegisteredClaims{
 		Expires: time.Now().UTC().Add(exp).Unix(),
 		ID:      uuid.New().String(),
