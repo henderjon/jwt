@@ -7,3 +7,16 @@
 
 # jwt
 a plain JWT lib with a simple interface
+
+
+## TODO
+
+  - RS256 = rsassa_pkcs1_256
+  - RS384 = rsassa_pkcs1_384
+  - RS512 = rsassa_pkcs1_512
+  - ES256 = ecdsa_256
+  - ES384 = ecdsa_384
+  - ES512 = ecdsa_512
+  - PS256 = rsassa_pss_256
+  - PS384 = rsassa_pss_384
+  - PS512 = rsassa_pss_512
