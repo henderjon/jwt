@@ -30,8 +30,8 @@ func (s *HMACSHA512) Name() string {
 }
 
 // Verify a given JWT via the Signer
-func (s *HMACSHA512) Verify(src, signature string) bool {
-	expected := s.Sign(src)
+func (s *HMACSHA512) Verify(json, signature string) bool {
+	expected := s.Sign(json)
 	if signature == expected {
 		return true
 	}
