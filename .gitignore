@@ -13,3 +13,4 @@
 
 # Ignore vendoered deps, for now
 vendor/*
+.DS_Store
