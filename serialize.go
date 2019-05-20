@@ -42,14 +42,18 @@ func Inspect(header Header, claims Claimer) ([]byte, []byte) {
 }
 
 // Serialize generates a JWT given a set of Claims
-func Serialize(claims Claimer, signer Signer) string {
+func Serialize(claims Claimer, signer Signer) (string, error) {
 	h, c := Inspect(NewHeader(signer.Name()), claims)
 
 	header := Base64Encode(h)
 	payload := Base64Encode(c)
 
 	jwt := cat(header, payload)
-	return cat(jwt, signer.Sign(jwt))
+	sig, err := signer.Sign(jwt)
+	if err != nil {
+		return "", err
+	}
+	return cat(jwt, sig), nil
 }
 
 // Unserialize decodes a JWT's claims into `dest` and verifies the JWT via the given Signer
@@ -65,9 +69,9 @@ func Unserialize(jwt string, signer Signer, dest interface{}) error {
 		return err
 	}
 
-	v := signer.Verify(cat(tokens[tokenHeader], tokens[tokenClaims]), tokens[tokenSignature])
-	if !v {
-		return errors.New("invalid signature")
+	err = signer.Verify(cat(tokens[tokenHeader], tokens[tokenClaims]), tokens[tokenSignature])
+	if err != nil {
+		return err
 	}
 
 	err = verifyClaims(tokens[tokenClaims], signer, dest)
@@ -109,6 +113,7 @@ func verifyClaims(claims64 string, signer Signer, dest interface{}) error {
 	if err != nil {
 		return errors.New("invalid claims", err)
 	}
+
 	return nil
 }
 

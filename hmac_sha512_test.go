@@ -28,7 +28,11 @@ func TestSerializeHS512(t *testing.T) {
 	payload := getPayloadHS512()
 	signer := NewHMACSHA512([]byte("random string"))
 
-	token := Serialize(payload, signer)
+	token, err := Serialize(payload, signer)
+	if err != nil {
+		t.Error(err)
+	}
+
 	expected := `eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsInN1YiI6ImEgbmV3IGphbSIsImV4cCI6MTY1MzA3MzUzOCwianRpIjoiN2UzZjE2ZDItYjBkOC00MjQ4LTg1Y2ItZGI3ODU2ZDRiZmM0In0.bGKM6wtqaUq3ANJD6mFcrjW3WonA87GIRq_PTE9EDKe7EqzXkbb5-aiVcVk5m5O2JiIbx2wsEQ0YtpEVF-8G1Q`
 	if diff := cmp.Diff(token, expected); diff != "" {
 		t.Errorf("serialize error: (-got +want)\n%s", diff)
@@ -39,7 +43,10 @@ func TestUnserializeHS512(t *testing.T) {
 	payload := getPayloadHS512()
 	signer := NewHMACSHA512([]byte("random string"))
 
-	token := Serialize(payload, signer)
+	token, err := Serialize(payload, signer)
+	if err != nil {
+		t.Error(err)
+	}
 
 	m := &tmpHS512{}
 	if e := Unserialize(token, signer, m); e != nil {

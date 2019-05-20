@@ -28,7 +28,11 @@ func TestSerializeHS256(t *testing.T) {
 	payload := getPayloadHS256()
 	signer := NewHMACSHA256([]byte("random string"))
 
-	token := Serialize(payload, signer)
+	token, err := Serialize(payload, signer)
+	if err != nil {
+		t.Error(err)
+	}
+
 	expected := `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsInN1YiI6ImEgbmV3IGphbSIsImV4cCI6MTY1MzA3MzUzOCwianRpIjoiN2UzZjE2ZDItYjBkOC00MjQ4LTg1Y2ItZGI3ODU2ZDRiZmM0In0.kAj7JvTsGHveCpA5UpcxSxsN2ECd_hY9cem_bp_e-Uc`
 	if diff := cmp.Diff(token, expected); diff != "" {
 		t.Errorf("serialize error: (-got +want)\n%s", diff)
@@ -39,7 +43,10 @@ func TestUnserializeHS256(t *testing.T) {
 	payload := getPayloadHS256()
 	signer := NewHMACSHA256([]byte("random string"))
 
-	token := Serialize(payload, signer)
+	token, err := Serialize(payload, signer)
+	if err != nil {
+		t.Error(err)
+	}
 
 	m := &tmpHS256{}
 	if e := Unserialize(token, signer, m); e != nil {

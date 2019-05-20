@@ -3,6 +3,7 @@ package jwt
 import (
 	"crypto"
 	"crypto/hmac"
+	"errors"
 	// init this hash
 	_ "crypto/sha512"
 )
@@ -18,10 +19,10 @@ func NewHMACSHA512(secret []byte) *HMACSHA512 {
 }
 
 // Sign generates a Hmac512 hash of a string using a secret
-func (s *HMACSHA512) Sign(json string) string {
+func (s *HMACSHA512) Sign(json string) (string, error) {
 	h := hmac.New(crypto.SHA512.New, s.secret)
 	h.Write([]byte(json))
-	return Base64Encode(h.Sum(nil))
+	return Base64Encode(h.Sum(nil)), nil
 }
 
 // Name gives the name of the Signer
@@ -30,10 +31,13 @@ func (s *HMACSHA512) Name() string {
 }
 
 // Verify a given JWT via the Signer
-func (s *HMACSHA512) Verify(json, signature string) bool {
-	expected := s.Sign(json)
-	if signature == expected {
-		return true
+func (s *HMACSHA512) Verify(json, signature string) error {
+	expected, err := s.Sign(json)
+	if err != nil {
+		return err
 	}
-	return false
+	if signature != expected {
+		return errors.New("invalid signature")
+	}
+	return nil
 }
