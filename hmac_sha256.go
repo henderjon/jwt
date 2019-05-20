@@ -4,7 +4,7 @@ import (
 	"crypto"
 	"crypto/hmac"
 	"errors"
-	// init this hash
+	// this lib had to be linked at compile time
 	_ "crypto/sha256"
 )
 
