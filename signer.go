@@ -4,5 +4,5 @@ package jwt
 type Signer interface {
 	Verify(json, signature string) error // Returns nil if signature is valid
 	Sign(signingString string) (string, error)
-	Name() string // Returns encoded signature or error
+	Hash() string // Returns encoded signature or error
 }

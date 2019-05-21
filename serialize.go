@@ -43,7 +43,7 @@ func Inspect(header Header, claims Claimer) ([]byte, []byte) {
 
 // Serialize generates a JWT given a set of Claims
 func Serialize(claims Claimer, signer Signer) (string, error) {
-	h, c := Inspect(NewHeader(signer.Name()), claims)
+	h, c := Inspect(NewHeader(signer.Hash()), claims)
 
 	header := Base64Encode(h)
 	payload := Base64Encode(c)
@@ -95,7 +95,7 @@ func verifyHeader(header64 string, signer Signer) error {
 		return errors.New("invalid header", err)
 	}
 
-	if h.Algorithm != signer.Name() {
+	if h.Algorithm != signer.Hash() {
 		return errors.Errorf("invalid algorithm: %s", h.Algorithm)
 	}
 	return nil

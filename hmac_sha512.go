@@ -25,8 +25,8 @@ func (s *HMACSHA512) Sign(json string) (string, error) {
 	return Base64Encode(h.Sum(nil)), nil
 }
 
-// Name gives the name of the Signer
-func (s *HMACSHA512) Name() string {
+// Hash gives the name of the Signer
+func (s *HMACSHA512) Hash() string {
 	return "HS512"
 }
 
