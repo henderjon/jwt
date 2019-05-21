@@ -6,14 +6,14 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-type tmpHS384 struct {
+type tmpSignHS256 struct {
 	Name  string `json:"nam,omitempty"`
 	Email string `json:"eml,omitempty"`
 	RegisteredClaims
 }
 
-func getPayloadHS384() *tmpHS384 {
-	return &tmpHS384{
+func getPayloadSignHS256() *tmpSignHS256 {
+	return &tmpSignHS256{
 		Name:  "John Paul Jones",
 		Email: "jpj@ledzep.com",
 		RegisteredClaims: RegisteredClaims{
@@ -24,31 +24,31 @@ func getPayloadHS384() *tmpHS384 {
 	}
 }
 
-func TestSerializeHS384(t *testing.T) {
-	payload := getPayloadHS384()
-	signer := NewHMACSHA384([]byte("random string"))
+func TestSerializeSignHS256(t *testing.T) {
+	payload := getPayloadSignHS256()
+	signer := NewSignHS256([]byte("random string"))
 
 	token, err := Serialize(payload, signer)
 	if err != nil {
 		t.Error(err)
 	}
 
-	expected := `eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsInN1YiI6ImEgbmV3IGphbSIsImV4cCI6MTY1MzA3MzUzOCwianRpIjoiN2UzZjE2ZDItYjBkOC00MjQ4LTg1Y2ItZGI3ODU2ZDRiZmM0In0.ee_NPBbUCvgT4hujOWp13jeNUiiiRZrRJaFok1p-SU6xXFz7pKEhG1yuA3bs_2Ah`
+	expected := `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsInN1YiI6ImEgbmV3IGphbSIsImV4cCI6MTY1MzA3MzUzOCwianRpIjoiN2UzZjE2ZDItYjBkOC00MjQ4LTg1Y2ItZGI3ODU2ZDRiZmM0In0.kAj7JvTsGHveCpA5UpcxSxsN2ECd_hY9cem_bp_e-Uc`
 	if diff := cmp.Diff(token, expected); diff != "" {
-		t.Errorf("serialize error: (-got +want)\n%s\n%s", err, diff)
+		t.Errorf("serialize error: (-got +want)\n%s", diff)
 	}
 }
 
-func TestUnserializeHS384(t *testing.T) {
-	payload := getPayloadHS384()
-	signer := NewHMACSHA384([]byte("random string"))
+func TestUnserializeSignHS256(t *testing.T) {
+	payload := getPayloadSignHS256()
+	signer := NewSignHS256([]byte("random string"))
 
 	token, err := Serialize(payload, signer)
 	if err != nil {
 		t.Error(err)
 	}
 
-	m := &tmpHS384{}
+	m := &tmpSignHS256{}
 	if e := Unserialize(token, signer, m); e != nil {
 		t.Errorf("unserialize error:\n%s", e)
 	}

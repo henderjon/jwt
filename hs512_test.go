@@ -26,7 +26,7 @@ func getPayloadHS512() *tmpHS512 {
 
 func TestSerializeHS512(t *testing.T) {
 	payload := getPayloadHS512()
-	signer := NewHMACSHA512([]byte("random string"))
+	signer := NewSignHS512([]byte("random string"))
 
 	token, err := Serialize(payload, signer)
 	if err != nil {
@@ -41,7 +41,7 @@ func TestSerializeHS512(t *testing.T) {
 
 func TestUnserializeHS512(t *testing.T) {
 	payload := getPayloadHS512()
-	signer := NewHMACSHA512([]byte("random string"))
+	signer := NewSignHS512([]byte("random string"))
 
 	token, err := Serialize(payload, signer)
 	if err != nil {
