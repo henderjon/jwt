@@ -3,6 +3,7 @@ package jwt
 import (
 	"crypto"
 	"crypto/hmac"
+	"hash"
 	// this lib had to be linked at compile time
 	_ "crypto/sha256"
 	_ "crypto/sha512"
@@ -37,6 +38,14 @@ type Signer interface {
 // SigningFunc is a signing function
 type signingFunc func(json string) []byte
 
+func makeHMACSigningFunc(f func() hash.Hash, secret []byte) signingFunc {
+	return func(json string) []byte {
+		h := hmac.New(f, secret)
+		h.Write([]byte(json))
+		return h.Sum(nil)
+	}
+}
+
 // NewHMACSigner is a factory for signers of the HMAC hash type
 func NewHMACSigner(alg SigningHash, secret []byte) Signer {
 	switch alg {
@@ -44,30 +53,18 @@ func NewHMACSigner(alg SigningHash, secret []byte) Signer {
 		panic("hash not implemented")
 	case HS256:
 		return &HMACSigner{
-			name: "HS256",
-			signingFunc: func(json string) []byte {
-				h := hmac.New(crypto.SHA256.New, secret)
-				h.Write([]byte(json))
-				return h.Sum(nil)
-			},
+			name:        "HS256",
+			signingFunc: makeHMACSigningFunc(crypto.SHA256.New, secret),
 		}
 	case HS384:
 		return &HMACSigner{
-			name: "HS384",
-			signingFunc: func(json string) []byte {
-				h := hmac.New(crypto.SHA384.New, secret)
-				h.Write([]byte(json))
-				return h.Sum(nil)
-			},
+			name:        "HS384",
+			signingFunc: makeHMACSigningFunc(crypto.SHA384.New, secret),
 		}
 	case HS512:
 		return &HMACSigner{
-			name: "HS512",
-			signingFunc: func(json string) []byte {
-				h := hmac.New(crypto.SHA512.New, secret)
-				h.Write([]byte(json))
-				return h.Sum(nil)
-			},
+			name:        "HS512",
+			signingFunc: makeHMACSigningFunc(crypto.SHA512.New, secret),
 		}
 	}
 }
