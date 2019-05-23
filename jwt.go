@@ -25,7 +25,7 @@ type Claimer interface {
 	Valid() bool
 }
 
-// RegisteredClaims represents the standard registered claims of a JWT
+// RegisteredClaims implements Claimer and represents the standard registered claims of a JWT
 type RegisteredClaims struct {
 	Issuer    string `json:"iss,omitempty"` // (Issuer) Claim
 	Subject   string `json:"sub,omitempty"` // (Subject) Claim
@@ -60,7 +60,7 @@ func (c *RegisteredClaims) IsExpired(t int64) bool {
 	return c.Expires <= t
 }
 
-// Valid the current claim against time.Now()
+// Valid implements Claimer and validates the current claim `NotActive` & `IsExpired` against time.Now()
 func (c *RegisteredClaims) Valid() bool {
 	t := time.Now().UTC().Unix()
 	return !c.NotActive(t) && !c.IsExpired(t)
