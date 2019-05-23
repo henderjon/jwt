@@ -10,7 +10,7 @@ a plain JWT lib with a simple interface
 
 ## influence
 
-Much of this is *heavily* inspired by [dgrijalva/jwt-go](github.com/dgrijalva/jwt-go) but I wanted to simplify the API.
+Much of this is *heavily* inspired by [dgrijalva/jwt-go](github.com/dgrijalva/jwt-go) but I wanted to simplify parts of the API.
 
 
 ## TODO
