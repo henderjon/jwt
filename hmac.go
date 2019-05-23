@@ -10,12 +10,12 @@ import (
 // HMACSigner will sign a JWT using crypto.SHA256
 type HMACSigner struct {
 	name        string
-	signingFunc signingFunc
+	signerFunc signerFunc
 }
 
 // Sign generates a Hmac256 hash of a string using a secret
 func (s *HMACSigner) Sign(json string) (string, error) {
-	h := s.signingFunc(json)
+	h := s.signerFunc(json)
 	return Base64Encode(h), nil
 }
 
@@ -26,7 +26,7 @@ func (s *HMACSigner) Hash() string {
 
 // Verify a given JWT via the Signer
 func (s *HMACSigner) Verify(json, signature string) error {
-	expected := s.signingFunc(json)
+	expected := s.signerFunc(json)
 
 	given, err := Base64Decode(signature)
 	if err != nil {

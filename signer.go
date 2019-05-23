@@ -35,10 +35,10 @@ type Signer interface {
 	Hash() string // Returns encoded signature or error
 }
 
-// SigningFunc is a signing function
-type signingFunc func(json string) []byte
+// signerFunc is a signing function
+type signerFunc func(json string) []byte
 
-func makeHMACSigningFunc(f func() hash.Hash, secret []byte) signingFunc {
+func makeHMACSignerFunc(f func() hash.Hash, secret []byte) signerFunc {
 	return func(json string) []byte {
 		h := hmac.New(f, secret)
 		h.Write([]byte(json))
@@ -53,18 +53,18 @@ func NewHMACSigner(alg SigningHash, secret []byte) Signer {
 		panic("hash not implemented")
 	case HS256:
 		return &HMACSigner{
-			name:        "HS256",
-			signingFunc: makeHMACSigningFunc(crypto.SHA256.New, secret),
+			name:       "HS256",
+			signerFunc: makeHMACSignerFunc(crypto.SHA256.New, secret),
 		}
 	case HS384:
 		return &HMACSigner{
-			name:        "HS384",
-			signingFunc: makeHMACSigningFunc(crypto.SHA384.New, secret),
+			name:       "HS384",
+			signerFunc: makeHMACSignerFunc(crypto.SHA384.New, secret),
 		}
 	case HS512:
 		return &HMACSigner{
-			name:        "HS512",
-			signingFunc: makeHMACSigningFunc(crypto.SHA512.New, secret),
+			name:       "HS512",
+			signerFunc: makeHMACSignerFunc(crypto.SHA512.New, secret),
 		}
 	}
 }
