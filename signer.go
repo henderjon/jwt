@@ -47,7 +47,7 @@ func makeHMACSignerFunc(f func() hash.Hash, secret []byte) signerFunc {
 }
 
 // NewHMACSigner is a factory for signers of the HMAC hash type
-func NewHMACSigner(alg SigningHash, secret []byte) Signer {
+func NewHMACSigner(alg SigningHash, secret []byte) *HMACSigner {
 	switch alg {
 	default:
 		panic("hash not implemented")
