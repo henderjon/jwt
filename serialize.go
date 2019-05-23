@@ -34,8 +34,8 @@ func Base64Decode(src string) ([]byte, error) {
 	return decoded, nil
 }
 
-// Inspect allows the inspection of the values going into the header and payload of the JWT
-func Inspect(header Header, claims Claimer) ([]byte, []byte) {
+// Marshal allows the inspection of the values going into the header and payload of the JWT
+func Marshal(header Header, claims Claimer) ([]byte, []byte) {
 	h, _ := json.Marshal(header)
 	c, _ := json.Marshal(claims)
 	return h, c
@@ -43,7 +43,7 @@ func Inspect(header Header, claims Claimer) ([]byte, []byte) {
 
 // Serialize generates a JWT given a set of Claims
 func Serialize(claims Claimer, signer Signer) (string, error) {
-	h, c := Inspect(NewHeader(signer.Hash()), claims)
+	h, c := Marshal(NewHeader(signer.Hash()), claims)
 
 	header := Base64Encode(h)
 	payload := Base64Encode(c)
