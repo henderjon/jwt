@@ -13,16 +13,10 @@ type SignHS256 struct {
 	secret []byte
 }
 
-// NewSignHS256 is a signer
-func NewSignHS256(secret []byte) *SignHS256 {
-	return &SignHS256{secret}
-}
-
 // Sign generates a Hmac256 hash of a string using a secret
 func (s *SignHS256) Sign(json string) (string, error) {
-	h := hmac.New(crypto.SHA256.New, s.secret)
-	h.Write([]byte(json))
-	return Base64Encode(h.Sum(nil)), nil
+	h := s.sign(json)
+	return Base64Encode(h), nil
 }
 
 // Hash gives the name of the Signer
@@ -32,12 +26,20 @@ func (s *SignHS256) Hash() string {
 
 // Verify a given JWT via the Signer
 func (s *SignHS256) Verify(json, signature string) error {
-	expected, err := s.Sign(json)
+	expected := s.sign(json)
+
+	given, err := Base64Decode(signature)
 	if err != nil {
 		return err
 	}
-	if signature != expected {
+	if !hmac.Equal(expected, given) {
 		return errors.New("invalid signature")
 	}
 	return nil
+}
+
+func (s *SignHS256) sign(json string) []byte {
+	h := hmac.New(crypto.SHA256.New, s.secret)
+	h.Write([]byte(json))
+	return h.Sum(nil)
 }

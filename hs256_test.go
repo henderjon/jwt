@@ -6,27 +6,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-type tmpSignHS256 struct {
-	Name  string `json:"nam,omitempty"`
-	Email string `json:"eml,omitempty"`
-	RegisteredClaims
-}
-
-func getPayloadSignHS256() *tmpSignHS256 {
-	return &tmpSignHS256{
-		Name:  "John Paul Jones",
-		Email: "jpj@ledzep.com",
-		RegisteredClaims: RegisteredClaims{
-			Subject: "a new jam",
-			Expires: 1653073538,
-			ID:      "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
-		},
-	}
-}
-
 func TestSerializeSignHS256(t *testing.T) {
-	payload := getPayloadSignHS256()
-	signer := NewSignHS256([]byte("random string"))
+	payload := newHsClaims()
+	signer := NewHMACSigner(HS256, []byte("random string"))
 
 	token, err := Serialize(payload, signer)
 	if err != nil {
@@ -40,15 +22,15 @@ func TestSerializeSignHS256(t *testing.T) {
 }
 
 func TestUnserializeSignHS256(t *testing.T) {
-	payload := getPayloadSignHS256()
-	signer := NewSignHS256([]byte("random string"))
+	payload := newHsClaims()
+	signer := NewHMACSigner(HS256, []byte("random string"))
 
 	token, err := Serialize(payload, signer)
 	if err != nil {
 		t.Error(err)
 	}
 
-	m := &tmpSignHS256{}
+	m := &hsClaims{}
 	if e := Unserialize(token, signer, m); e != nil {
 		t.Errorf("unserialize error:\n%s", e)
 	}
