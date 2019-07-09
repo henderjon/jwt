@@ -8,9 +8,9 @@ import (
 )
 
 type tmp struct {
+	RegisteredClaims
 	Name  string `json:"nam,omitempty"`
 	Email string `json:"eml,omitempty"`
-	RegisteredClaims
 }
 
 func getPayload() *tmp {
@@ -18,9 +18,9 @@ func getPayload() *tmp {
 		Name:  "John Paul Jones",
 		Email: "jpj@ledzep.com",
 		RegisteredClaims: RegisteredClaims{
-			Subject: "a new jam",
-			Expires: 1653073538,
-			ID:      "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
+			Subject:        "a new jam",
+			ExpirationTime: 1653073538,
+			JWTID:          "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
 		},
 	}
 }
@@ -29,7 +29,7 @@ func TestMarshal(t *testing.T) {
 	payload := getPayload()
 
 	b, _ := json.Marshal(payload)
-	expected := `{"nam":"John Paul Jones","eml":"jpj@ledzep.com","sub":"a new jam","exp":1653073538,"jti":"7e3f16d2-b0d8-4248-85cb-db7856d4bfc4"}`
+	expected := `{"jti":"7e3f16d2-b0d8-4248-85cb-db7856d4bfc4","exp":1653073538,"sub":"a new jam","nam":"John Paul Jones","eml":"jpj@ledzep.com"}`
 	if diff := cmp.Diff(string(b), expected); diff != "" {
 		t.Errorf("mashal error: (-got +want)\n%s", diff)
 	}

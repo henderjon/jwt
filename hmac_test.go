@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -14,13 +15,13 @@ type hsClaims struct {
 
 func newHsClaims() *hsClaims {
 	return &hsClaims{
+		RegisteredClaims: RegisteredClaims{
+			Subject:        "a new jam",
+			ExpirationTime: 1653073538,
+			JWTID:          "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
+		},
 		Name:  "John Paul Jones",
 		Email: "jpj@ledzep.com",
-		RegisteredClaims: RegisteredClaims{
-			Subject: "a new jam",
-			Expires: 1653073538,
-			ID:      "7e3f16d2-b0d8-4248-85cb-db7856d4bfc4",
-		},
 	}
 }
 
@@ -33,7 +34,7 @@ func TestSerializeSignHS256(t *testing.T) {
 		t.Error(err)
 	}
 
-	expected := `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsInN1YiI6ImEgbmV3IGphbSIsImV4cCI6MTY1MzA3MzUzOCwianRpIjoiN2UzZjE2ZDItYjBkOC00MjQ4LTg1Y2ItZGI3ODU2ZDRiZmM0In0.kAj7JvTsGHveCpA5UpcxSxsN2ECd_hY9cem_bp_e-Uc`
+	expected := `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsImp0aSI6IjdlM2YxNmQyLWIwZDgtNDI0OC04NWNiLWRiNzg1NmQ0YmZjNCIsImV4cCI6MTY1MzA3MzUzOCwic3ViIjoiYSBuZXcgamFtIn0.GMsqTvA5SQHR6rCD5QFnW2nipAETlNEv09oXXLhZqqM`
 	if diff := cmp.Diff(token, expected); diff != "" {
 		t.Errorf("serialize error: (-got +want)\n%s", diff)
 	}
@@ -71,7 +72,7 @@ func TestSerializeHS384(t *testing.T) {
 		t.Error(err)
 	}
 
-	expected := `eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsInN1YiI6ImEgbmV3IGphbSIsImV4cCI6MTY1MzA3MzUzOCwianRpIjoiN2UzZjE2ZDItYjBkOC00MjQ4LTg1Y2ItZGI3ODU2ZDRiZmM0In0.ee_NPBbUCvgT4hujOWp13jeNUiiiRZrRJaFok1p-SU6xXFz7pKEhG1yuA3bs_2Ah`
+	expected := `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsImp0aSI6IjdlM2YxNmQyLWIwZDgtNDI0OC04NWNiLWRiNzg1NmQ0YmZjNCIsImV4cCI6MTY1MzA3MzUzOCwic3ViIjoiYSBuZXcgamFtIn0.9sGryaXKQ7ymTEok8lvzKBFtQLk14xvdJzNtB8LyxdZweLn6r94m8qJQXsfxIsnD`
 	if diff := cmp.Diff(token, expected); diff != "" {
 		t.Errorf("serialize error: (-got +want)\n%s\n%s", err, diff)
 	}
@@ -109,7 +110,7 @@ func TestSerializeHS512(t *testing.T) {
 		t.Error(err)
 	}
 
-	expected := `eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsInN1YiI6ImEgbmV3IGphbSIsImV4cCI6MTY1MzA3MzUzOCwianRpIjoiN2UzZjE2ZDItYjBkOC00MjQ4LTg1Y2ItZGI3ODU2ZDRiZmM0In0.bGKM6wtqaUq3ANJD6mFcrjW3WonA87GIRq_PTE9EDKe7EqzXkbb5-aiVcVk5m5O2JiIbx2wsEQ0YtpEVF-8G1Q`
+	expected := `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJuYW0iOiJKb2huIFBhdWwgSm9uZXMiLCJlbWwiOiJqcGpAbGVkemVwLmNvbSIsImp0aSI6IjdlM2YxNmQyLWIwZDgtNDI0OC04NWNiLWRiNzg1NmQ0YmZjNCIsImV4cCI6MTY1MzA3MzUzOCwic3ViIjoiYSBuZXcgamFtIn0.TmOdxqwZsjN6AbijFH0EaohJ9RGcS-ZaypmW4GSZ5qUf3Q9zaA6LSUycrfCscll7rNQOK075dkj7goxUaZxqWQ`
 	if diff := cmp.Diff(token, expected); diff != "" {
 		t.Errorf("serialize error: (-got +want)\n%s", diff)
 	}
@@ -135,5 +136,28 @@ func TestUnserializeHS512(t *testing.T) {
 
 	if diff := cmp.Diff(m, payload); diff != "" {
 		t.Errorf("serialize error: (-got +want)\n%s", diff)
+	}
+}
+
+type myonClaims struct {
+	RegisteredClaims
+	UserID      int      `json:"uid,omitempty"`
+	UserRoleID  int      `json:"urid,omitempty"`
+	UserGradeID int      `json:"ugid,omitempty"`
+	AccountID   int      `json:"aid,omitempty"`
+	BuildingID  int      `json:"bid,omitempty"`
+	Permissions []int    `json:"perms,omitempty"`
+	Lang        []string `json:"lng,omitempty"`
+	LoggedIn    bool     `json:"loggedIn,omitempty"`
+}
+
+func TestHS256Verify(t *testing.T) {
+	payload := `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwczpcL1wvd3d3Lm15b24uY29tIiwiaXNzIjoiaHR0cHM6XC9cL3d3dy5teW9uLmNvbSIsImp0aSI6ImUwOWFiMDhmLTJkZmEtNGU0MS05YzhiLWVlYmRmMDhiZWYwYyIsImlhdCI6MTU2MjY3ODA0MywiZXhwIjoxNTYyNjc5MzYzLCJ1aWQiOjIwNTA4NDAsInVyaWQiOjIsInVnaWQiOjgsImFpZCI6NDA1Njc1LCJiaWQiOjQwNTY3NiwicGVybXMiOlsxLDIsNCw1LDYsOCwxOSwzMSw3NCwxMzIsMTM3LDEzOCwxNDMsMTQ3LDE2NSwxNjYsMTc2LDE3OCwxNzldLCJsbmciOlsiZW5fdXMiXSwibG9nZ2VkSW4iOnRydWV9.O_EJseZVWT__aWer3dqA6L7vYUDrefk5opXijHw6Ur0`
+	signer := NewHMACSigner(HS256, []byte(os.Getenv("myonjwtsalt")))
+
+	m := &myonClaims{}
+	err := Unserialize(payload, signer, m)
+	if err != nil {
+		t.Error(err)
 	}
 }
