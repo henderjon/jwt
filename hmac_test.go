@@ -161,3 +161,14 @@ func TestHS256Verify(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestHS256Verify2(t *testing.T) {
+	payload := `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMWFiYTA1MWQtZmFjNS00YWM2LWI4NGQtNTNjMjk3NWFiZDFkIiwibGFhIjoxNTYyNjg4NTYwLCJ0YWwiOjE3OCwiZXhwIjoxNTYyNzk2NTYwLCJpYXQiOjE1NjI2ODQzMTIsImp0aSI6ImE4OTdiYzUyLWU3ZjMtNGI1NC05OGFhLTdmMzIzZDVhNzAwNyJ9.s1ncQBuamfBFDTIZzljnH42TuqmlGhxqTdfdQSujJow`
+	signer := NewHMACSigner(HS256, []byte(os.Getenv("myonjwtsalt")))
+
+	m := &myonClaims{}
+	err := Unserialize(payload, signer, m)
+	if err != nil {
+		t.Error(err)
+	}
+}

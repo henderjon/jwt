@@ -3,6 +3,7 @@ package jwt
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/henderjon/errors"
@@ -85,7 +86,7 @@ func verifyHeader(header64 string, signer Signer) error {
 	// decode claims
 	header, err := Base64Decode(header64)
 	if err != nil {
-		return errors.New("invalid header", err)
+		return fmt.Errorf("invalid header: %w", err)
 	}
 
 	h := &Header{}
