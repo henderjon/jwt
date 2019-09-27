@@ -3,10 +3,9 @@ package jwt
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
-
-	"github.com/henderjon/errors"
 )
 
 const (
@@ -93,11 +92,11 @@ func verifyHeader(header64 string, signer Signer) error {
 	// parses claims from string to a struct
 	err = json.Unmarshal([]byte(header), h)
 	if err != nil {
-		return errors.New("invalid header", err)
+		return fmt.Errorf("invalid header: %w", err)
 	}
 
 	if h.Algorithm != signer.Hash() {
-		return errors.Errorf("invalid algorithm: %s", h.Algorithm)
+		return fmt.Errorf("invalid algorithm: %s", h.Algorithm)
 	}
 	return nil
 }
@@ -106,13 +105,13 @@ func verifyClaims(claims64 string, signer Signer, dest interface{}) error {
 	// decode claims
 	claims, err := Base64Decode(claims64)
 	if err != nil {
-		return errors.New("invalid claims", err)
+		return fmt.Errorf("invalid claims: %w", err)
 	}
 
 	// parses claims from string to a struct
 	err = json.Unmarshal([]byte(claims), dest)
 	if err != nil {
-		return errors.New("invalid claims", err)
+		return fmt.Errorf("invalid claims: %w", err)
 	}
 
 	return nil
