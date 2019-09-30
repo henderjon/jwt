@@ -1,9 +1,13 @@
 [![GoDoc](https://godoc.org/github.com/henderjon/jwt?status.svg)](https://godoc.org/github.com/henderjon/jwt)
 [![License: BSD-3](https://img.shields.io/badge/license-BSD--3-blue.svg)](https://img.shields.io/badge/license-BSD--3-blue.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/henderjon/jwt)](https://goreportcard.com/report/github.com/henderjon/jwt)
-[![Build Status](https://travis-ci.org/henderjon/jwt.svg?branch=dev)](https://travis-ci.org/henderjon/jwt)
 ![tag](https://img.shields.io/github/tag/henderjon/jwt.svg)
 ![release](https://img.shields.io/github/release/henderjon/jwt.svg)
+
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/henderjon/jwt)](https://goreportcard.com/report/github.com/henderjon/jwt)
+[![Build Status](https://travis-ci.org/henderjon/jwt.svg?branch=dev)](https://travis-ci.org/henderjon/jwt)
+[![Maintainability](https://api.codeclimate.com/v1/badges/df165f1d091666a37b09/maintainability)](https://codeclimate.com/github/henderjon/jwt/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/df165f1d091666a37b09/test_coverage)](https://codeclimate.com/github/henderjon/jwt/test_coverage)
 
 # jwt
 a plain JWT lib with a simple interface
