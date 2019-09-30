@@ -1,3 +1,5 @@
+COVERAGEOUTFILE=coverage.out
+
 all: test race
 
 .PHONY: dep
@@ -6,11 +8,11 @@ dep:
 
 .PHONY: test-vendor
 test-vendor:
-	go test -mod=vendor -coverprofile=coverage.out -covermode=count
+	go test -mod=vendor -coverprofile=$(COVERAGEOUTFILE) -covermode=count
 
 .PHONY: test
 test: dep
-	go test -coverprofile=coverage.out -covermode=count
+	go test -coverprofile=$(COVERAGEOUTFILE) -covermode=count
 
 .PHONY: race
 race: dep
@@ -18,4 +20,9 @@ race: dep
 
 .PHONY: test-report
 test-report: test
-	go tool cover -html=coverage.out
+	go tool cover -html=$(COVERAGEOUTFILE)
+
+.PHONY: travis
+travis:
+	TESTSALT=86A96823-FD69-4556-8960-34887473750A
+	go test -coverprofile $(COVERAGEOUTFILE) ./...
