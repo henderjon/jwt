@@ -13,44 +13,11 @@ import (
 // HMACSigner will sign a JWT using crypto.SHA256
 type HMACSigner struct {
 	name       string
-	signerFunc signerFunc
-}
-
-// Sign generates a Hmac256 hash of a string using a secret
-func (s *HMACSigner) Sign(json string) (string, error) {
-	h := s.signerFunc(json)
-	return Base64Encode(h), nil
-}
-
-// Hash gives the name of the Signer
-func (s *HMACSigner) Hash() string {
-	return s.name
-}
-
-// Verify a given JWT via the Signer
-func (s *HMACSigner) Verify(json, signature string) error {
-	expected := s.signerFunc(json)
-
-	given, err := Base64Decode(signature)
-	if err != nil {
-		return err
-	}
-	if !hmac.Equal(expected, given) {
-		return errors.New("invalid signature")
-	}
-	return nil
-}
-
-func makeHMACSignerFunc(f func() hash.Hash, secret []byte) signerFunc {
-	return func(json string) []byte {
-		h := hmac.New(f, secret)
-		h.Write([]byte(json))
-		return h.Sum(nil)
-	}
+	signerFunc SignerFunc
 }
 
 // NewHMACSigner is a factory for signers of the HMAC hash type
-func NewHMACSigner(alg SigningHash, secret []byte) *HMACSigner {
+func NewHMACSigner(alg signingHash, secret []byte) *HMACSigner {
 	switch alg {
 	default:
 		panic("hash not implemented")
@@ -69,5 +36,38 @@ func NewHMACSigner(alg SigningHash, secret []byte) *HMACSigner {
 			name:       "HS512",
 			signerFunc: makeHMACSignerFunc(crypto.SHA512.New, secret),
 		}
+	}
+}
+
+// Sign generates a Hmac256 hash of a string using a secret
+func (s *HMACSigner) Sign(json string) (string, error) {
+	h := s.signerFunc(json)
+	return Base64Encode(h), nil
+}
+
+// Name gives the name of the Signer
+func (s *HMACSigner) Name() string {
+	return s.name
+}
+
+// Verify a given JWT via the Signer
+func (s *HMACSigner) Verify(control, variable string) error {
+	expected := s.signerFunc(control)
+
+	given, err := Base64Decode(variable)
+	if err != nil {
+		return err
+	}
+	if !hmac.Equal(expected, given) {
+		return errors.New("invalid signature")
+	}
+	return nil
+}
+
+func makeHMACSignerFunc(f func() hash.Hash, secret []byte) SignerFunc {
+	return func(json string) []byte {
+		h := hmac.New(f, secret)
+		h.Write([]byte(json))
+		return h.Sum(nil)
 	}
 }

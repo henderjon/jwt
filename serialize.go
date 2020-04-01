@@ -34,16 +34,10 @@ func Base64Decode(src string) ([]byte, error) {
 	return decoded, nil
 }
 
-// Marshal allows the inspection of the values going into the header and payload of the JWT
-func Marshal(header Header, claims Claimer) ([]byte, []byte) {
-	h, _ := json.Marshal(header)
-	c, _ := json.Marshal(claims)
-	return h, c
-}
-
 // Serialize generates a JWT given a set of Claims
-func Serialize(claims Claimer, signer Signer) (string, error) {
-	h, c := Marshal(NewHeader(signer.Hash()), claims)
+func Serialize(claims interface{}, signer Signer) (string, error) {
+	h, _ := json.Marshal(NewHeader(signer.Name()))
+	c, _ := json.Marshal(claims)
 
 	header := Base64Encode(h)
 	payload := Base64Encode(c)
@@ -64,16 +58,19 @@ func Unserialize(jwt string, signer Signer, dest interface{}) error {
 		return err
 	}
 
+	// check that the algorithm matches
 	err = verifyHeader(tokens[tokenHeader], signer)
 	if err != nil {
 		return err
 	}
 
+	// check that the ENCODED strings match
 	err = signer.Verify(cat(tokens[tokenHeader], tokens[tokenClaims]), tokens[tokenSignature])
 	if err != nil {
 		return err
 	}
 
+	// check that the claims parse into the given struct
 	err = verifyClaims(tokens[tokenClaims], signer, dest)
 	if err != nil {
 		return err
@@ -95,7 +92,7 @@ func verifyHeader(header64 string, signer Signer) error {
 		return fmt.Errorf("invalid header: %w", err)
 	}
 
-	if h.Algorithm != signer.Hash() {
+	if h.Algorithm != signer.Name() {
 		return fmt.Errorf("invalid algorithm: %s", h.Algorithm)
 	}
 	return nil

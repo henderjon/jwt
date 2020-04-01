@@ -1,11 +1,11 @@
 package jwt
 
-// SigningHash is a custom type for specifying the algorithm used
-type SigningHash uint
+// signingHash is a custom type for specifying the algorithm used
+type signingHash uint
 
 // These specify the algorithm to be used
 const (
-	HS256 SigningHash = iota + 1
+	HS256 signingHash = iota + 1
 	HS384
 	HS512
 	// RS256
@@ -21,10 +21,13 @@ const (
 
 // Signer is implemented to add new methods for signing or verifying tokens.
 type Signer interface {
-	Verify(json, signature string) error // Returns nil if signature is valid
+	// Verify checks to see that the signed strings match; returns nil if signature is valid
+	Verify(control, variable string) error
+	// Sign generates a hash of a string using the previously provided algorithm
 	Sign(signingString string) (string, error)
-	Hash() string // Returns encoded signature or error
+	// Name returns the name of the algorithm being used
+	Name() string
 }
 
-// signerFunc is a signing function
-type signerFunc func(json string) []byte
+// SignerFunc is a signing function, READ: it does the work
+type SignerFunc func(json string) []byte

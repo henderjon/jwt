@@ -20,11 +20,6 @@ func NewHeader(alg string) Header {
 	}
 }
 
-// Claimer is an interface
-type Claimer interface {
-	Valid() bool
-}
-
 // RegisteredClaims implements Claimer and represents the standard registered claims of a JWT
 type RegisteredClaims struct {
 	Audience       string `json:"aud,omitempty"` // (Audience) Claim
@@ -37,31 +32,39 @@ type RegisteredClaims struct {
 }
 
 // NewRegisteredClaims gives you a basic set of claims based on the given subject and expiration
-func NewRegisteredClaims(exp time.Duration) RegisteredClaims {
+func NewRegisteredClaims(exp time.Time) RegisteredClaims {
 	return RegisteredClaims{
-		ExpirationTime: time.Now().UTC().Add(exp).Unix(),
+		ExpirationTime: exp.UTC().Unix(),
 		JWTID:          uuid.New().String(),
 	}
 }
 
+func (c *RegisteredClaims) TTL(t time.Duration) {
+	if c.ExpirationTime == 0 {
+		c.ExpirationTime = time.Now().Add(t).UTC().Unix()
+	} else {
+		c.ExpirationTime += int64(t)
+	}
+}
+
 // NotActive checks to see if the claims' `nbf` field is less than the given time
-func (c *RegisteredClaims) NotActive(t int64) bool {
+func (c *RegisteredClaims) NotActive(t time.Time) bool {
 	if c.NotBefore == 0 {
 		return false
 	}
-	return c.NotBefore >= t
+	return c.NotBefore >= t.Unix()
 }
 
 // IsExpired checks to see if the claims' `exp` field is less than the given time
-func (c *RegisteredClaims) IsExpired(t int64) bool {
+func (c *RegisteredClaims) IsExpired(t time.Time) bool {
 	if c.ExpirationTime == 0 {
 		return false
 	}
-	return c.ExpirationTime <= t
+	return c.ExpirationTime <= t.Unix()
 }
 
 // Valid implements Claimer and validates the current claim `NotActive` & `IsExpired` against time.Now()
 func (c *RegisteredClaims) Valid() bool {
-	t := time.Now().UTC().Unix()
+	t := time.Now().UTC()
 	return !c.NotActive(t) && !c.IsExpired(t)
 }
