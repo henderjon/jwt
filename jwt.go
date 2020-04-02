@@ -40,11 +40,7 @@ func NewRegisteredClaims(exp time.Time) RegisteredClaims {
 }
 
 func (c *RegisteredClaims) TTL(t time.Duration) {
-	if c.ExpirationTime == 0 {
-		c.ExpirationTime = time.Now().Add(t).UTC().Unix()
-	} else {
-		c.ExpirationTime += int64(t.Seconds())
-	}
+	c.ExpirationTime = time.Now().Add(t).UTC().Unix()
 }
 
 // NotActive checks to see if the claims' `nbf` field is less than the given time
