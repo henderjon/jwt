@@ -43,7 +43,7 @@ func (c *RegisteredClaims) TTL(t time.Duration) {
 	if c.ExpirationTime == 0 {
 		c.ExpirationTime = time.Now().Add(t).UTC().Unix()
 	} else {
-		c.ExpirationTime += int64(t)
+		c.ExpirationTime += int64(t.Seconds())
 	}
 }
 
