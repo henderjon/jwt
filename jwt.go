@@ -52,7 +52,7 @@ func (c *RegisteredClaims) NotActive(t time.Time) bool {
 	if c.NotBefore == 0 {
 		return false
 	}
-	return c.NotBefore >= t.Unix()
+	return c.NotBefore >= t.UTC().Unix()
 }
 
 // IsExpired checks to see if the claims' `exp` field is less than the given time
@@ -60,7 +60,7 @@ func (c *RegisteredClaims) IsExpired(t time.Time) bool {
 	if c.ExpirationTime == 0 {
 		return false
 	}
-	return c.ExpirationTime <= t.Unix()
+	return c.ExpirationTime <= t.UTC().Unix()
 }
 
 // Valid implements Claimer and validates the current claim `NotActive` & `IsExpired` against time.Now()
